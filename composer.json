@@ -12,7 +12,6 @@
         }
     ],
     "require": {
-        "phpseclib/phpseclib": "^3.0",
-        "monolog/monolog": "^2.9"
+        "phpseclib/phpseclib": "^3.0"
     }
 }

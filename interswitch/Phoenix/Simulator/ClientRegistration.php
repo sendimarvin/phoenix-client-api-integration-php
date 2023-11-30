@@ -27,17 +27,19 @@ class ClientRegistration
     public static function main()
     {
 
-        $pair = CryptoUtils::generateKeyPair();
-        $privateKey = base64_encode($pair->getPrivate()->getEncoded());
-        $publicKey = base64_encode($pair->getPublic()->getEncoded());
+        // $pair = CryptoUtils::generateKeyPair();
+
+        [$privateKey, $publicKey] = CryptoUtils::generateKeyPair();
+        $privateKey = base64_encode($privateKey);
+        $publicKey = base64_encode($publicKey);
 
         echo " private key ", $privateKey, PHP_EOL;
         echo " public key  ", $publicKey, PHP_EOL;
 
         $curveUtils = new EllipticCurveUtils("ECDH");
-        $keyPair = $curveUtils->generateKeypair();
-        $curvePrivateKey = $curveUtils->getPrivateKey($keyPair);
-        $curvePublicKey = $curveUtils->getPublicKey($keyPair);
+        [$curvePrivateKey, $curvePublicKey ] = $curveUtils->generateKeypair();
+        // $curvePrivateKey = $curveUtils->getPrivateKey($keyPair);
+        // $curvePublicKey = $curveUtils->getPublicKey($keyPair);
 
         $response = self::clientRegistrationRequest($publicKey, $curvePublicKey, $privateKey);
 
@@ -79,13 +81,13 @@ class ClientRegistration
         $setup->setOwnerPhoneNumber("00000");
         $setup->setPhoneNumber("00000000");
         $setup->setPublicKey($publicKey);
-        $setup->setRequestReference(uuid_create());
+        $setup->setRequestReference(self::generateUUID());
         $setup->setTerminalId(Constants::TERMINAL_ID);
         $setup->setGprsCoordinate("");
         $setup->setClientSessionPublicKey($clientSessionPublicKey);
 
         $headers = AuthUtils::generateInterswitchAuth(Constants::POST_REQUEST, self::$registrationEndpointUrl, "", "", "", $privateKey);
-        $json = JsonDataTransform::marshall($setup);
+        $json = json_encode($setup);
 
         return HttpUtil::postHTTPRequest(self::$registrationEndpointUrl, $headers, $json);
     }
@@ -99,7 +101,7 @@ class ClientRegistration
         $completeReg->setTerminalId(Constants::TERMINAL_ID);
         $completeReg->setSerialId(Constants::MY_SERIAL_ID);
         $completeReg->setOtp(CryptoUtils::encrypt($otp, $terminalKey));
-        $completeReg->setRequestReference(uuid_create());
+        $completeReg->setRequestReference(self::generateUUID());
         $completeReg->setPassword(CryptoUtils::encrypt($passwordHash, $terminalKey));
         $completeReg->setTransactionReference($transactionReference);
         $completeReg->setAppVersion(Constants::APP_VERSION);
@@ -109,5 +111,30 @@ class ClientRegistration
         $json = JsonDataTransform::marshall($completeReg);
 
         return HttpUtil::postHTTPRequest(self::$registrationCompletionEndpointUrl, $headers, $json);
+    }
+
+
+    static function generateUUID() {
+        if (function_exists('uuid_create')) {
+            $uuid = uuid_create(UUID_TYPE_RANDOM);
+    
+            // Convert binary UUID to string representation
+            $uuidString = bin2hex(uuid_parse($uuid));
+    
+            // Format UUID as per RFC 4122 (e.g., xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx)
+            $formattedUUID = sprintf(
+                '%s-%s-%s-%s-%s',
+                substr($uuidString, 0, 8),
+                substr($uuidString, 8, 4),
+                substr($uuidString, 12, 4),
+                substr($uuidString, 16, 4),
+                substr($uuidString, 20)
+            );
+    
+            return $formattedUUID;
+        } else {
+            // Fallback if uuid_create function is not available
+            return uniqid();
+        }
     }
 }

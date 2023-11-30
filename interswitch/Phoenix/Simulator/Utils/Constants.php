@@ -4,11 +4,11 @@ namespace Interswitch\Phoenix\Simulator\Utils;
 
 class Constants
 {
-    public static $PRIKEY = "";
-    public static $PUBKEY = "";
-    public static $MY_TERMINAL_ID = "";
-    public static $MY_SERIAL_ID = "";
-    public static $ACCOUNT_PWD = "";
+    public const PRIKEY = "";
+    public const PUBKEY = "";
+    public  const MY_TERMINAL_ID = "";
+    public const MY_SERIAL_ID = "";
+    public const ACCOUNT_PWD = "";
 
     //header strings
     public const TIMESTAMP = "Timestamp";
@@ -27,8 +27,8 @@ class Constants
     public const CLIENT_ID = "";
     public const CLIENT_SECRET = "A";
 
-    public static $POST_REQUEST = "POST";
-    public static $GET_REQUEST = "GET";
+    public const POST_REQUEST = "POST";
+    public const GET_REQUEST = "GET";
 
     public const AES_CBC_PKCS7_PADDING = "AES/CBC/PKCS7Padding";
     public const RSA_NONE_OAEPWithSHA256AndMGF1Padding = "RSA/NONE/OAEPWithSHA256AndMGF1Padding";

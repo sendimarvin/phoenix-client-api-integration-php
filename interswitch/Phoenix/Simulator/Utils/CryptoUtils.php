@@ -2,184 +2,171 @@
 
 namespace Interswitch\Phoenix\Simulator\Utils;
 
-use phpseclib\Crypt\AES;
-use phpseclib\Crypt\RSA;
-use phpseclib\Math\BigInteger;
+use Exception;
+use phpseclib3\Crypt\RSA;
+// use phpseclib3\Crypt\Key\RSA;
+
+// use phpseclib\Crypt\RSA;
 
 class CryptoUtils
 {
+    private static $LOG;
+
     public static function encrypt($plaintext, $terminalKey)
     {
         try {
-            \phpseclib3\Crypt\AES::register();
-            $message = \phpseclib3\Helper::str2bin($plaintext);
-            $iv = Hex::decode(UtilMethods::randomBytesHexEncoded(16));
-            $ivParameterSpec = new \phpseclib3\Crypt\AES\MODE_CBC($iv);
-            $cipher = new \phpseclib3\Crypt\AES();
-            $keyBytes = Base64::decode($terminalKey);
-            $cipher->setKey($keyBytes);
-            $cipher->setIV($iv);
-            $secret = $iv . $cipher->encrypt($message);
-            return Base64::encode($secret);
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            self::initialize();
+            $message = utf8_encode($plaintext);
+            $iv = openssl_random_pseudo_bytes(16);
+            $cipherText = openssl_encrypt($message, 'aes-256-cbc', base64_decode($terminalKey), 0, $iv);
+            $encryptedValue = $iv . $cipherText;
+            return base64_encode($encryptedValue);
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to encrypt object");
         }
     }
 
     public static function decrypt($encryptedValue, $terminalKey)
     {
         try {
-            $secretKeyBytes = Base64::decode($terminalKey);
-            $iv = \phpseclib3\Helper::subStr($encryptedValue, 0, 16);
-            $encryptedValue = \phpseclib3\Helper::subStr($encryptedValue, 16);
-            $ivParameterSpec = new \phpseclib3\Crypt\AES\MODE_CBC($iv);
-            $cipher = new \phpseclib3\Crypt\AES();
-            $cipher->setKey($secretKeyBytes);
-            $cipher->setIV($iv);
-            $clear = $cipher->decrypt($encryptedValue);
-            return $clear;
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            $encryptedValue = base64_decode($encryptedValue);
+            $iv = substr($encryptedValue, 0, 16);
+            $cipherText = substr($encryptedValue, 16);
+            $decryptedValue = openssl_decrypt($cipherText, 'aes-256-cbc', base64_decode($terminalKey), 0, $iv);
+            return utf8_decode($decryptedValue);
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to decrypt object");
         }
     }
 
     public static function decryptWithPrivate($plaintext)
     {
         try {
-            $rsa = new RSA();
-            $rsa->setPrivateKey(getRSAPrivate());
-            $message = Base64::decode($plaintext);
-            $rsa->load($rsa->getPrivateKey());
-            $secret = $rsa->decrypt($message);
-            return $secret;
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            self::initialize();
+            $message = base64_decode($plaintext);
+            openssl_private_decrypt($message, $decrypted, self::getRSAPrivate());
+            return utf8_decode($decrypted);
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to decryptWithPrivate ");
         }
     }
 
     public static function decryptWithPrivateBytes($message, $privateKey)
     {
         try {
-            $rsa = new RSA();
-            $rsa->setPrivateKey($privateKey);
-            $rsa->load($rsa->getPrivateKey());
-            $secret = $rsa->decrypt($message);
-            return $secret;
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            self::initialize();
+            openssl_private_decrypt($message, $decrypted, $privateKey);
+            return utf8_decode($decrypted);
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to decryptWithPrivate ");
         }
     }
 
     public static function decryptWithPrivateString($plaintext, $privateKey)
     {
-        $message = Base64::decode($plaintext);
-        return decryptWithPrivateBytes($message, getRSAPrivate($privateKey));
+        $message = base64_decode($plaintext);
+        return self::decryptWithPrivateBytes($message, $privateKey);
     }
 
     public static function encryptWithPrivate($plaintext)
     {
         try {
-            $rsa = new RSA();
-            $rsa->setPrivateKey(getRSAPrivate());
-            $message = $plaintext;
-            $rsa->load($rsa->getPrivateKey());
-            $secret = $rsa->encrypt($message);
-            return Base64::encode($secret);
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            self::initialize();
+            $message = utf8_encode($plaintext);
+            openssl_private_encrypt($message, $encrypted, self::getRSAPrivate());
+            return base64_encode($encrypted);
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to encryptWithPrivate ");
         }
     }
 
-    public static function getRSAPrivate($privateKey = null)
+    // public static function getRSAPrivate()
+    // {
+    //     return self::getRSAPrivate(Constants::PRIKEY);
+    // }
+
+    public static function getRSAPrivateString($privateKey)
     {
-        try {
-            $keyBytes = Base64::decode(trim($privateKey));
-            $spec = new PKCS8($keyBytes);
-            $rsa = new RSA();
-            $rsa->load($spec->getPrivateKey());
-            return $rsa->getPrivateKey();
-        } catch (\Exception $e) {
-            die($e->getMessage());
-        }
+        return self::getRSAPrivate($privateKey);
     }
 
-    public static function signWithPrivateKeyString($data, $privateKey)
+    public static function getRSAPrivate($privateKey = Constants::PRIKEY)
     {
-        return signWithPrivateKey($data, getRSAPrivate($privateKey));
-    }
-
-    public static function signWithPrivateKey($data, $privateKey = null)
-    {
-
-        if (isnull($privateKey))
-        return signWithPrivateKey($data, getRSAPrivate());
-
         try {
-            if (empty($data)) {
-                return '';
+            $keyResource = openssl_get_privatekey($privateKey);
+            if ($keyResource === false) {
+                throw new Exception("Failed to get private key");
             }
-            $rsa = new RSA();
-            $rsa->setPrivateKey($privateKey);
-            $rsa->load($rsa->getPrivateKey());
-            $rsa->setSignatureMode(RSA::SIGNATURE_PKCS1);
-            $signature = $rsa->sign($data);
-            return Base64::encode($signature);
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            return $keyResource;
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to getRSAPrivate ");
         }
     }
 
-    public static function verifySignatureX($signature, $message)
+    public static function signWithPrivateKey($data, $privateKey)
     {
-        $pubKey = getPublicKey(Constants::PUBKEY);
-        return verifySignature($signature, $message, $pubKey);
-    }
-
-    public static function verifySignatureString($signature, $message, $publicKey)
-    {
-        $pubKey = getPublicKey($publicKey);
-        return verifySignature($signature, $message, $pubKey);
-    }
-
-    public static function verifySignature($signature, $message, $pubKey = null)
-    {
-
-        if (isnull($pubKey ))
-        return verifySignatureX($signature, $message);
-
         try {
-            $rsa = new RSA();
-            $rsa->setPublicKey($pubKey);
-            $rsa->load($rsa->getPublicKey());
-            $rsa->setSignatureMode(RSA::SIGNATURE_PKCS1);
-            $isVerified = $rsa->verify($message, $signature);
-            return $isVerified;
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            if ($data === "") {
+                return "";
+            }
+            openssl_sign($data, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+            return utf8_decode(base64_encode($signature));
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to signWithPrivateKey ");
         }
     }
 
-    public static function generateKeyPair()
+    public static function verifySignature($signature, $message, $publicKey)
     {
         try {
-            $rsa = new RSA();
-            $keyPair = $rsa->createKey(2048);
-            return $keyPair;
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            $pubKey = self::getPublicKey($publicKey);
+            $result = openssl_verify($message, base64_decode($signature), $pubKey, OPENSSL_ALGO_SHA256);
+            return $result === 1;
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to verifySignature ");
         }
     }
 
     public static function getPublicKey($publicKeyContent)
     {
         try {
-            $key = Base64::decode($publicKeyContent);
-            $rsa = new RSA();
-            $rsa->setPublicKey($key);
-            $rsa->load($rsa->getPublicKey());
-            return $rsa->getPublicKey();
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            $keyResource = openssl_get_publickey($publicKeyContent);
+            if ($keyResource === false) {
+                throw new Exception("Failed to get public key");
+            }
+            return $keyResource;
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to getPublicKey ");
         }
+    }
+
+    public static function generateKeyPair()
+    {
+        try {
+            // $rsa = new RSA();
+            // $keyPair = $rsa->createKey();
+
+            $privateKey = RSA::createKey();
+            
+            return [
+                $privateKey,
+                $privateKey->getPublicKey(),
+            ];
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to generateKeyPair ");
+        }
+    }
+
+    private static function initialize()
+    {
+        if (!isset(self::$LOG)) {
+            self::$LOG = LoggerFactory::getLogger(self::class);
+        }
+    }
+
+    private static function handleException($exception, $errorCode, $errorMessage)
+    {
+        self::$LOG->error("Exception trace: {}", $exception->getTraceAsString());
+        throw new SystemApiException($errorCode, $errorMessage);
     }
 }
