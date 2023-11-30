@@ -5,7 +5,6 @@ namespace Interswitch\Phoenix\Simulator;
 use Interswitch\Phoenix\Simulator\Utils\AuthUtils;
 use Interswitch\Phoenix\Simulator\Utils\Constants;
 use Interswitch\Phoenix\Simulator\Utils\HttpUtil;
-use Interswitch\Phoenix\Simulator\Utils\KeyExchange;
 use Interswitch\Phoenix\Simulator\Utils\PhoenixResponseCodes;
 
 

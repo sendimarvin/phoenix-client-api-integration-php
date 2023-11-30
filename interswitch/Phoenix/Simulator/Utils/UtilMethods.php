@@ -1,5 +1,6 @@
 <?php
 
+namespace Interswitch\Phoenix\Simulator\Utils;
 class UtilMethods
 {
     private static $LOG;
@@ -18,9 +19,10 @@ class UtilMethods
     public static function unMarshallSystemResponseObject($response, $theClass)
     {
         try {
-            $mapper = new ObjectMapper();
-            $type = $mapper->getTypeFactory()->constructParametricType(SystemResponse::class, $theClass);
-            return $mapper->readValue($response, $type);
+            // $mapper = new ObjectMapper();
+            // $type = $mapper->getTypeFactory()->constructParametricType(SystemResponse::class, $theClass);
+            // return $mapper->readValue($response, $type);
+            return json_decode($response);
         } catch (Exception $e) {
             self::$LOG->error("Exception trace {} ", ExceptionUtils::getStackTrace($e));
             throw new SystemApiException(PhoenixResponseCodes::INTERNAL_ERROR, "Failure to unmarshall json string from systemresponse object");
@@ -38,12 +40,14 @@ class UtilMethods
         }
     }
 
-    public static function isEmptyString($str, $defaultReturn)
+    public static function isEmptyString($str, $defaultReturn = null)
     {
+        if (isnull($defaultReturn))
+            return isEmptyStringX($str);
         return self::isEmptyString($str) ? $defaultReturn : $str;
     }
 
-    public static function isEmptyString($str)
+    public static function isEmptyStringX($str)
     {
         return (is_null($str)) || ($str == null) || (strcasecmp($str, "") == 0) || (strcasecmp($str, "null") == 0);
     }

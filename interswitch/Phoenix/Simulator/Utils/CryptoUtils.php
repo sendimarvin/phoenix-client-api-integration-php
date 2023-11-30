@@ -103,14 +103,18 @@ class CryptoUtils
         }
     }
 
-    public static function signWithPrivateKey($data, $privateKey)
+    public static function signWithPrivateKey($data, $privateKey = null)
     {
+
+        if(is_null($privateKey))
+            $privateKey = Constants::PRIKEY;
+
         try {
             if ($data === "") {
                 return "";
             }
             openssl_sign($data, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-            return utf8_decode(base64_encode($signature));
+            return base64_encode($signature);
         } catch (Exception $e) {
             self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to signWithPrivateKey ");
         }
