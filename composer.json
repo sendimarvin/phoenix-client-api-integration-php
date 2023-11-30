@@ -11,5 +11,7 @@
             "email": "semix.hamidouh@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "phpseclib/phpseclib": "^3.0"
+    }
 }

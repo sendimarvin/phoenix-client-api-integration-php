@@ -3,6 +3,10 @@
 namespace Interswitch\Phoenix\Simulator\Utils;
 
 use Exception;
+use phpseclib3\Crypt\RSA;
+// use phpseclib3\Crypt\Key\RSA;
+
+// use phpseclib\Crypt\RSA;
 
 class CryptoUtils
 {
@@ -138,7 +142,19 @@ class CryptoUtils
 
     public static function generateKeyPair()
     {
-        throw new Exception("Key pair generation not implemented in OpenSSL");
+        try {
+            // $rsa = new RSA();
+            // $keyPair = $rsa->createKey();
+
+            $privateKey = RSA::createKey();
+            
+            return [
+                $privateKey,
+                $privateKey->getPublicKey(),
+            ];
+        } catch (Exception $e) {
+            self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to generateKeyPair ");
+        }
     }
 
     private static function initialize()
