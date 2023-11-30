@@ -76,17 +76,17 @@ class CryptoUtils
         }
     }
 
-    public static function getRSAPrivate()
-    {
-        return self::getRSAPrivate(Constants::PRIKEY);
-    }
+    // public static function getRSAPrivate()
+    // {
+    //     return self::getRSAPrivate(Constants::PRIKEY);
+    // }
 
     public static function getRSAPrivateString($privateKey)
     {
         return self::getRSAPrivate($privateKey);
     }
 
-    public static function getRSAPrivate($privateKey)
+    public static function getRSAPrivate($privateKey = Constants::PRIKEY)
     {
         try {
             $keyResource = openssl_get_privatekey($privateKey);
