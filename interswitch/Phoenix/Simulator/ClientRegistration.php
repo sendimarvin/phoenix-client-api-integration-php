@@ -20,20 +20,19 @@ class ClientRegistration
 {
     private static $LOG;
 
-    public static $baseUrl = Constants::ROOT_LINK . "client/";
-    public static $registrationEndpointUrl = self::$baseUrl . "clientRegistration";
-    public static $registrationCompletionEndpointUrl = self::$baseUrl . "completeClientRegistration";
+    public const BASE_URL = Constants::ROOT_LINK . "client/";
+    public static $registrationEndpointUrl = self::BASE_URL . "clientRegistration";
+    public static $registrationCompletionEndpointUrl = self::BASE_URL . "completeClientRegistration";
 
     public static function main()
     {
-        self::$LOG = LoggerFactory::getLogger(ClientRegistration::class);
 
         $pair = CryptoUtils::generateKeyPair();
         $privateKey = base64_encode($pair->getPrivate()->getEncoded());
         $publicKey = base64_encode($pair->getPublic()->getEncoded());
 
-        self::$LOG->info(" private key {} ", $privateKey);
-        self::$LOG->info(" public key  {} ", $publicKey);
+        echo " private key ", $privateKey, PHP_EOL;
+        echo " public key  ", $publicKey, PHP_EOL;
 
         $curveUtils = new EllipticCurveUtils("ECDH");
         $keyPair = $curveUtils->generateKeypair();
@@ -44,29 +43,29 @@ class ClientRegistration
 
         $registrationResponse = UtilMethods::unMarshallSystemResponseObject($response, ClientRegistrationResponse::class);
         if ($registrationResponse->getResponseCode() !== PhoenixResponseCodes::APPROVED['CODE']) {
-            self::$LOG->info("Client Registration failed: {} ", $registrationResponse->getResponseMessage());
+            echo "Client Registration failed: ", $registrationResponse->getResponseMessage(), PHP_EOL;
         } else {
             $decryptedSessionKey = CryptoUtils::decryptWithPrivate($registrationResponse->getResponse()->getServerSessionPublicKey(), $privateKey);
             $terminalKey = $curveUtils->doECDH($curvePrivateKey, $decryptedSessionKey);
-            self::$LOG->info("==============terminalKey==============");
-            self::$LOG->info("terminalKey: {} ", $terminalKey);
+            echo "==============terminalKey==============", PHP_EOL;
+            echo "terminalKey: ", $terminalKey, PHP_EOL;
             $authToken = CryptoUtils::decryptWithPrivate($registrationResponse->getResponse()->getAuthToken(), $privateKey);
 
-            self::$LOG->info(" authToken {} ", $authToken);
+            echo " authToken ", $authToken, PHP_EOL;
             $transactionReference = $registrationResponse->getResponse()->getTransactionReference();
-            self::$LOG->info("Enter received OTP: ");
+            echo "Enter received OTP: ", PHP_EOL;
             $otp = readline();
-            self::$LOG->info("OTP Entered: {}", $otp);
+            echo "OTP Entered: ", $otp, PHP_EOL;
             $finalResponse = self::completeRegistration($terminalKey, $authToken, $transactionReference, $otp, $privateKey);
 
             $response = UtilMethods::unMarshallSystemResponseObject($finalResponse, LoginResponse::class);
             if ($response->getResponseCode() === PhoenixResponseCodes::APPROVED['CODE']) {
                 if ($response->getResponse()->getClientSecret() !== null && strlen($response->getResponse()->getClientSecret()) > 5) {
                     $clientSecret = CryptoUtils::decryptWithPrivate($response->getResponse()->getClientSecret(), $privateKey);
-                    self::$LOG->info("clientSecret: {}", $clientSecret);
+                    echo "clientSecret: ", $clientSecret, PHP_EOL;
                 }
             } else {
-                self::$LOG->info("finalResponse: {}", $response->getResponseMessage());
+                echo "finalResponse: ", $response->getResponseMessage(), PHP_EOL;
             }
         }
     }
