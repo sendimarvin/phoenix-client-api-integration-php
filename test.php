@@ -8,9 +8,9 @@ use Interswitch\Phoenix\Simulator\PaymentNotification;
 require "vendor/autoload.php";
 
 
-// $clientRegistration = ClientRegistration::main();
+$clientRegistration = ClientRegistration::main();
 // $accountinquiry = AccountInquiry::main();
 // $balanceInquiry = BalanceInquiry::main();
-$paymentNotification = PaymentNotification::main();
+// $paymentNotification = PaymentNotification::main();
 
-var_dump($paymentNotification);
+var_dump($clientRegistration);

@@ -4,11 +4,11 @@ namespace Interswitch\Phoenix\Simulator\Dto;
 
 class ClientTerminalRequest 
 {
-    private $terminalId;
-    private $appVersion;
-    private $serialId;
-    private $requestReference;
-    private $gprsCoordinate;
+    public $terminalId;
+    public $appVersion;
+    public $serialId;
+    public $requestReference;
+    public $gprsCoordinate;
 
     public function getGprsCoordinate() {
         return $this->gprsCoordinate;

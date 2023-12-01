@@ -3,21 +3,21 @@
 namespace Interswitch\Phoenix\Simulator\Dto;
 
 class ClientRegistrationDetail extends ClientTerminalRequest {
-    private $name;
-    private $phoneNumber;
-    private $nin;
-    private $gender;
-    private $emailAddress;
-    private $ownerPhoneNumber;
-    private $publicKey;
-    private $clientSessionPublicKey;
+    public $name;
+    public $phoneNumber;
+    public $nin;
+    public $gender;
+    public $emailAddress;
+    public $ownerPhoneNumber;
+    public $publicKey;
+    public $clientSessionPublicKey;
 
     public function getClientSessionPublicKey() {
         return $this->clientSessionPublicKey;
     }
 
     public function setClientSessionPublicKey($clientSessionPublicKey) {
-        $this->clientSessionPublicKey = $clientSessionPublicKey;
+        $this->clientSessionPublicKey = (string)$clientSessionPublicKey;
     }
 
     public function getName() {
@@ -73,7 +73,6 @@ class ClientRegistrationDetail extends ClientTerminalRequest {
     }
 
     public function setPublicKey($publicKey) {
-        $this->publicKey = $publicKey;
+        $this->publicKey = (string) $publicKey;
     }
 }
-?>

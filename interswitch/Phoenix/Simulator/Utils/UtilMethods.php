@@ -1,6 +1,7 @@
 <?php
 
 namespace Interswitch\Phoenix\Simulator\Utils;
+
 class UtilMethods
 {
     private static $LOG;
@@ -40,15 +41,8 @@ class UtilMethods
         }
     }
 
-    public static function isEmptyString($str, $defaultReturn = null)
+    public static function isEmptyString($str = null, $defaultReturn = null)
     {
-        if (isnull($defaultReturn))
-            return isEmptyStringX($str);
         return self::isEmptyString($str) ? $defaultReturn : $str;
-    }
-
-    public static function isEmptyStringX($str)
-    {
-        return (is_null($str)) || ($str == null) || (strcasecmp($str, "") == 0) || (strcasecmp($str, "null") == 0);
     }
 }

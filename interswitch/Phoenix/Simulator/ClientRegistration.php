@@ -30,8 +30,8 @@ class ClientRegistration
         // $pair = CryptoUtils::generateKeyPair();
 
         [$privateKey, $publicKey] = CryptoUtils::generateKeyPair();
-        $privateKey = base64_encode($privateKey);
-        $publicKey = base64_encode($publicKey);
+        // $privateKey = base64_encode($privateKey);
+        // $publicKey = base64_encode($publicKey);
 
         echo " private key ", $privateKey, PHP_EOL;
         echo " public key  ", $publicKey, PHP_EOL;
@@ -43,8 +43,16 @@ class ClientRegistration
 
         $response = self::clientRegistrationRequest($publicKey, $curvePublicKey, $privateKey);
 
+        $response = json_decode($response);
+
+        // print_r($response);
+        // die();
+
         $registrationResponse = UtilMethods::unMarshallSystemResponseObject($response, ClientRegistrationResponse::class);
-        if ($registrationResponse->getResponseCode() !== PhoenixResponseCodes::APPROVED['CODE']) {
+
+
+        die();
+        if ($registrationResponse->responseCode !== PhoenixResponseCodes::APPROVED['CODE']) {
             echo "Client Registration failed: ", $registrationResponse->getResponseMessage(), PHP_EOL;
         } else {
             $decryptedSessionKey = CryptoUtils::decryptWithPrivate($registrationResponse->getResponse()->getServerSessionPublicKey(), $privateKey);
@@ -87,7 +95,11 @@ class ClientRegistration
         $setup->setClientSessionPublicKey($clientSessionPublicKey);
 
         $headers = AuthUtils::generateInterswitchAuth(Constants::POST_REQUEST, self::$registrationEndpointUrl, "", "", "", $privateKey);
-        $json = json_encode($setup);
+        $json = $setup;
+
+
+        // print_r($json);
+        // die();
 
         return HttpUtil::postHTTPRequest(self::$registrationEndpointUrl, $headers, $json);
     }

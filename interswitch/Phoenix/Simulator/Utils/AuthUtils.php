@@ -33,6 +33,8 @@ class AuthUtils
             $signatureCipher .= "&" . $additionalParameters;
         }
 
+        echo "\n------------------------------------------------------------------------------------------------\n";
+
         echo "signature cipher ", $signatureCipher;
 
         $interswitchAuth[Constants::AUTHORIZATION] = trim($authorization);
@@ -40,10 +42,16 @@ class AuthUtils
         $interswitchAuth[Constants::NONCE] = $nonce;
 
         if (empty($privateKey)) {
-            $interswitchAuth[Constants::SIGNATURE] = CryptoUtils::signWithPrivateKey($signatureCipher);
+            $interswitchAuth[Constants::SIGNATURE] = CryptoUtils::signWithPrivateKey($signatureCipher, '');
         } else {
             $interswitchAuth[Constants::SIGNATURE] = CryptoUtils::signWithPrivateKey($signatureCipher, $privateKey);
         }
+
+        // echo "\n------------------------------------------------------------------------------------------------\n";
+
+        // echo "signatureCipher \n";
+        // print_r($interswitchAuth);
+        // die();
 
         $authToken = !empty($terminalKey) ? CryptoUtils::encrypt($authToken, $terminalKey) : "";
         $interswitchAuth[Constants::AUTH_TOKEN] = $authToken;
