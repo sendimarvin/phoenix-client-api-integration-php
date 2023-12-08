@@ -4,111 +4,349 @@ namespace Interswitch\Phoenix\Simulator\Dto;
 
 class PhoenixResponseCodes 
 {
-    const NONEXISTENT_TRANSACTION = array("90025", "NON EXISTENT TRANSACTION", "25");
-    const INTERNAL_ERROR = array("90096", "AN ERROR OCCURED", "96");
-    const AUTHORIZATION_ERROR = array("90063", "AUTHORIZATION ERROR", "63");
-    const ROUTING_ERROR = array("90092", "ROUTING_ERROR", "92");
-    const EXPIRED_TOKEN = array("90054", "EXPIRED TIN/PIN/TOKEN  OR OTP", "54");
-    const APPROVED = array("90000", "TRANSACTION APPROVED", "00");
-    const DEPRECATED_APPROVED = array("9000", "TRANSACTION APPROVED", "00");
-    const TRANSACTION_SENT = array("90001", "TRANSACTION APPROVED", "09");
-    const DUPLICATE_REFERENCE = array("90026", "DUPLICATE REQUEST REFERENCE", "26");
-    const DUPLICATE_RECORD = array("90026", "DUPLICATE RECORD", "26");
-    const ISSUER_INNOPERATIVE = array("90091", "REMOTE SYSTEM TEMPORARILY UNAVAILABLE", "91");
-    const EXCEEDS_CONFIGURED_LIMIT = array("90098", "EXCEEDS CONFIGURED LIMIT", "98");
-    const REQUEST_IN_PROGRESS = array("90009", "REQUEST IN PROGRESS", "09");
-    const DECLINED = array("90020", "TRANSACTION DECLINED BY BILLER", "20");
-    const SUSUPECTED_DUPLICATE = array("90094", "REJECTED AS SUSPECT DUPLICATE", "94");
-    const SUSUPECTED_FRAUD = array("90059", "REJECTED AS SUSPECT DUPLICATE/FRAUD", "59");
-    const ERROR_RESPONSE_FROM_HOST = array("90006", "ERROR RESPONSE FROM HOST", "06");
-    const INVALID_AMOUNT = array("90013", "INVALID_AMOUNT", "13");
-    const UN_RECOGNIZABLE_CUSTOMER_NUMBER = array("90052", "UN RECOGNIZABLE CUSTOMER NUMBER", "12");
-    const MISSING_PHONE_NUMBER = array("900A9", "MISSING_PHONE_NUMBER", "12");
-    const UN_ACCEPTABLE_TRANSACTION_FEE = array("90023", "UN ACCEPTABLE TRANSACTION FEE", "23");
-    const INSUFFICIENT_FUNDS = array("90051", "INSUFFICIENT FUNDS", "51");
-    const WRONG_PIN_OR_OTP = array("90055", "WRONG PIN OR OTP", "55");
-    const FORMAT_ERROR = array("90030", "FORMAT ERROR", "30");
+    const NONEXISTENT_TRANSACTION = [
+        "CODE" => "90025",
+        "MESSAGE" => "NON EXISTENT TRANSACTION",
+        "SWITCH_ERROR_CODE" => "25",
+    ];
 
-    const INVALID_PAYMENT_CODE = array("70017", "INVALID PAYMENT ITEM", "96");
-    const INVALID_REQUEST_REFERENCE = array("70018", "INVALID OR DUPLICATE REQUEST REFERENCE", "12");
-    const SECURITY_CONFIGURATION_REQUIRED = array("700A5", "SECURITY CONFIGURATION REQUIRED ", "A5");
-    const PASSWORD_CHANGE_REQUIRED = array("700A6", "PASSWORD CHANGE REQUIRED ", "A6");
-    const DATA_NOT_FOUND = array("70038", "DATA NOT FOUND", "38");
-    const ACCOUNT_NOT_FOUND = array("90052", "ACCOUNT NOT FOUND", "52");
-    const SAVINGS_ACCOUNT_NOT_FOUND = array("70053", "ACCOUNT NOT FOUND", "53");
-    const INCORRECT_FEE_SETUP = array("70037", "INCORRECT FEE SETUP", "37");
-    const TERMINAL_OWNER_NOT_SET_UP = array("70030", "TERMINAL OWNER NOT SETUP OR CONFIGURED FOR THIS ACTION", "30");
-    const UNRECOGNISED_ISSUER = array("70031", "UNRECOGNIZED ISSUER ", "31");
-    const BILLER_NOT_FOUND = array("70010", "BILLER NOT FOUND", "10");
-    const BILLER_NOT_ENABLED_FOR_CHANNEL = array("70026", "BILLER  NOT ENABLED FOR CHANNEL", "26");
-    const ISSUER_NOT_ENABLED_FOR_BILLER = array("70027", "ISSUER NOT ENABLED FOR BILLER", "27");
-    const TERMINAL_OWNER_NOT_ENABLED_FOR_BILLER = array("70028", "TERMINAL OWNER NOT ENABLED FOR BILLER", "28");
-    const TERMINAL_OWNER_NOT_ENABLED_FOR_CHANNEL = array("70029", "TERMINAL OWNER NOT ENABLED FOR CHANNEL", "29");
-    const TRANSACTION_NOT_PERMITTED = array("70058", "TRANSACTION NOT PERMITTED", "58");
-    const NO_CARD_RECORD = array("70056", "NO CARD RECORD ", "56");
-    const EXPIRED_CARD = array("70054", "EXPIRED CARD ", "54");
-    const TRANSACTION_NOT_PERMITED_TO_CARD = array("70057", "TRANSACTION NOT PERMITTED TO CARDHOLDER", "57");
-    const PIN_TRIES_EXCEEDED = array("70038", "PIN TRIES EXCEEDED ", "38");
-    const EXCEEDS_WITHDRAWAL_LIMIT = array("70061", "EXCEEDS WITHDRAWAL LIMIT", "61");
-    const RESPONSE_RECEIVED_TOO_LATE = array("90009", "RESPONSE RECEIVED TOO LATE", "68");
+    const INTERNAL_ERROR = [
+        "CODE" => "90096",
+        "MESSAGE" => "AN ERROR OCCURRED",
+        "SWITCH_ERROR_CODE" => "96",
+    ];
+
+    const AUTHORIZATION_ERROR = [
+        "CODE" => "90063",
+        "MESSAGE" => "AUTHORIZATION ERROR",
+        "SWITCH_ERROR_CODE" => "63",
+    ];
+
+    const ROUTING_ERROR = [
+        "CODE" => "90092",
+        "MESSAGE" => "ROUTING ERROR",
+        "SWITCH_ERROR_CODE" => "92",
+    ];
+
+    const EXPIRED_TOKEN = [
+        "CODE" => "90054",
+        "MESSAGE" => "EXPIRED TIN/PIN/TOKEN OR OTP",
+        "SWITCH_ERROR_CODE" => "54",
+    ];
+
+    const APPROVED = [
+        "CODE" => "90000",
+        "MESSAGE" => "TRANSACTION APPROVED",
+        "SWITCH_ERROR_CODE" => "00",
+    ];
+
+    const DEPRECATED_APPROVED = [
+        "CODE" => "9000",
+        "MESSAGE" => "TRANSACTION APPROVED",
+        "SWITCH_ERROR_CODE" => "00",
+    ];
+
+    const TRANSACTION_SENT = [
+        "CODE" => "90001",
+        "MESSAGE" => "TRANSACTION APPROVED",
+        "SWITCH_ERROR_CODE" => "09",
+    ];
+
+    const DUPLICATE_REFERENCE = [
+        "CODE" => "90026",
+        "MESSAGE" => "DUPLICATE REQUEST REFERENCE",
+        "SWITCH_ERROR_CODE" => "26",
+    ];
+
+    const DUPLICATE_RECORD = [
+        "CODE" => "90026",
+        "MESSAGE" => "DUPLICATE RECORD",
+        "SWITCH_ERROR_CODE" => "26",
+    ];
+
+    const ISSUER_INNOPERATIVE = [
+        "CODE" => "90091",
+        "MESSAGE" => "REMOTE SYSTEM TEMPORARILY UNAVAILABLE",
+        "SWITCH_ERROR_CODE" => "91",
+    ];
+
+    const EXCEEDS_CONFIGURED_LIMIT = [
+        "CODE" => "90098",
+        "MESSAGE" => "EXCEEDS CONFIGURED LIMIT",
+        "SWITCH_ERROR_CODE" => "98",
+    ];
+
+    const REQUEST_IN_PROGRESS = [
+        "CODE" => "90009",
+        "MESSAGE" => "REQUEST IN PROGRESS",
+        "SWITCH_ERROR_CODE" => "09",
+    ];
+
+    const DECLINED = [
+        "CODE" => "90020",
+        "MESSAGE" => "TRANSACTION DECLINED BY BILLER",
+        "SWITCH_ERROR_CODE" => "20",
+    ];
+
+    const SUSPECTED_DUPLICATE = [
+        "CODE" => "90094",
+        "MESSAGE" => "REJECTED AS SUSPECT DUPLICATE",
+        "SWITCH_ERROR_CODE" => "94",
+    ];
+
+    const SUSPECTED_FRAUD = [
+        "CODE" => "90059",
+        "MESSAGE" => "REJECTED AS SUSPECT DUPLICATE/FRAUD",
+        "SWITCH_ERROR_CODE" => "59",
+    ];
+
+    const ERROR_RESPONSE_FROM_HOST = [
+        "CODE" => "90006",
+        "MESSAGE" => "ERROR RESPONSE FROM HOST",
+        "SWITCH_ERROR_CODE" => "06",
+    ];
+
+    const INVALID_AMOUNT = [
+        "CODE" => "90013",
+        "MESSAGE" => "INVALID AMOUNT",
+        "SWITCH_ERROR_CODE" => "13",
+    ];
+
+    const UN_RECOGNIZABLE_CUSTOMER_NUMBER = [
+        "CODE" => "90052",
+        "MESSAGE" => "UN RECOGNIZABLE CUSTOMER NUMBER",
+        "SWITCH_ERROR_CODE" => "12",
+    ];
+
+    const MISSING_PHONE_NUMBER = [
+        "CODE" => "900A9",
+        "MESSAGE" => "MISSING PHONE NUMBER",
+        "SWITCH_ERROR_CODE" => "12",
+    ];
+
+    const UN_ACCEPTABLE_TRANSACTION_FEE = [
+        "CODE" => "90023",
+        "MESSAGE" => "UNACCEPTABLE TRANSACTION FEE",
+        "SWITCH_ERROR_CODE" => "23",
+    ];
+
+    const INSUFFICIENT_FUNDS = [
+        "CODE" => "90051",
+        "MESSAGE" => "INSUFFICIENT FUNDS",
+        "SWITCH_ERROR_CODE" => "51",
+    ];
+
+    const WRONG_PIN_OR_OTP = [
+        "CODE" => "90055",
+        "MESSAGE" => "WRONG PIN OR OTP",
+        "SWITCH_ERROR_CODE" => "55",
+    ];
+
+    const FORMAT_ERROR = [
+        "CODE" => "90030",
+        "MESSAGE" => "FORMAT ERROR",
+        "SWITCH_ERROR_CODE" => "30",
+    ];
+
+    const INVALID_PAYMENT_CODE = [
+        "CODE" => "70017",
+        "MESSAGE" => "INVALID PAYMENT ITEM",
+        "SWITCH_ERROR_CODE" => "96",
+    ];
+
+    const INVALID_REQUEST_REFERENCE = [
+        "CODE" => "70018",
+        "MESSAGE" => "INVALID OR DUPLICATE REQUEST REFERENCE",
+        "SWITCH_ERROR_CODE" => "12",
+    ];
+
+    const SECURITY_CONFIGURATION_REQUIRED = [
+        "CODE" => "700A5",
+        "MESSAGE" => "SECURITY CONFIGURATION REQUIRED",
+        "SWITCH_ERROR_CODE" => "A5",
+    ];
+
+    const PASSWORD_CHANGE_REQUIRED = [
+        "CODE" => "700A6",
+        "MESSAGE" => "PASSWORD CHANGE REQUIRED",
+        "SWITCH_ERROR_CODE" => "A6",
+    ];
+
+    const DATA_NOT_FOUND = [
+        "CODE" => "70038",
+        "MESSAGE" => "DATA NOT FOUND",
+        "SWITCH_ERROR_CODE" => "38",
+    ];
+
+    const ACCOUNT_NOT_FOUND = [
+        "CODE" => "90052",
+        "MESSAGE" => "ACCOUNT NOT FOUND",
+        "SWITCH_ERROR_CODE" => "52",
+    ];
+
+    const SAVINGS_ACCOUNT_NOT_FOUND = [
+        "CODE" => "70053",
+        "MESSAGE" => "SAVINGS ACCOUNT NOT FOUND",
+        "SWITCH_ERROR_CODE" => "53",
+    ];
+
+    const INCORRECT_FEE_SETUP = [
+        "CODE" => "70037",
+        "MESSAGE" => "INCORRECT FEE SETUP",
+        "SWITCH_ERROR_CODE" => "37",
+    ];
+
+    const TERMINAL_OWNER_NOT_SET_UP = [
+        "CODE" => "70030",
+        "MESSAGE" => "TERMINAL OWNER NOT SET UP OR CONFIGURED FOR THIS ACTION",
+        "SWITCH_ERROR_CODE" => "30",
+    ];
+
+    const UNRECOGNIZED_ISSUER = [
+        "CODE" => "70031",
+        "MESSAGE" => "UNRECOGNIZED ISSUER",
+        "SWITCH_ERROR_CODE" => "31",
+    ];
+
+    const BILLER_NOT_FOUND = [
+        "CODE" => "70010",
+        "MESSAGE" => "BILLER NOT FOUND",
+        "SWITCH_ERROR_CODE" => "10",
+    ];
+
+    const BILLER_NOT_ENABLED_FOR_CHANNEL = [
+        "CODE" => "70026",
+        "MESSAGE" => "BILLER NOT ENABLED FOR CHANNEL",
+        "SWITCH_ERROR_CODE" => "26",
+    ];
+
+    const ISSUER_NOT_ENABLED_FOR_BILLER = [
+        "CODE" => "70027",
+        "MESSAGE" => "ISSUER NOT ENABLED FOR BILLER",
+        "SWITCH_ERROR_CODE" => "27",
+    ];
+
+    const TERMINAL_OWNER_NOT_ENABLED_FOR_BILLER = [
+        "CODE" => "70028",
+        "MESSAGE" => "TERMINAL OWNER NOT ENABLED FOR BILLER",
+        "SWITCH_ERROR_CODE" => "28",
+    ];
+
+    const TERMINAL_OWNER_NOT_ENABLED_FOR_CHANNEL = [
+        "CODE" => "70029",
+        "MESSAGE" => "TERMINAL OWNER NOT ENABLED FOR CHANNEL",
+        "SWITCH_ERROR_CODE" => "29",
+    ];
+
+    const TRANSACTION_NOT_PERMITTED = [
+        "CODE" => "70058",
+        "MESSAGE" => "TRANSACTION NOT PERMITTED",
+        "SWITCH_ERROR_CODE" => "58",
+    ];
+
+    const NO_CARD_RECORD = [
+        "CODE" => "70056",
+        "MESSAGE" => "NO CARD RECORD",
+        "SWITCH_ERROR_CODE" => "56",
+    ];
+
+    const EXPIRED_CARD = [
+        "CODE" => "70054",
+        "MESSAGE" => "EXPIRED CARD",
+        "SWITCH_ERROR_CODE" => "54",
+    ];
+
+    const TRANSACTION_NOT_PERMITTED_TO_CARD = [
+        "CODE" => "70057",
+        "MESSAGE" => "TRANSACTION NOT PERMITTED TO CARDHOLDER",
+        "SWITCH_ERROR_CODE" => "57",
+    ];
+
+    const PIN_TRIES_EXCEEDED = [
+        "CODE" => "70038",
+        "MESSAGE" => "PIN TRIES EXCEEDED",
+        "SWITCH_ERROR_CODE" => "38",
+    ];
+
+    const EXCEEDS_WITHDRAWAL_LIMIT = [
+        "CODE" => "70061",
+        "MESSAGE" => "EXCEEDS WITHDRAWAL LIMIT",
+        "SWITCH_ERROR_CODE" => "61",
+    ];
+
+    const RESPONSE_RECEIVED_TOO_LATE = [
+        "CODE" => "90009",
+        "MESSAGE" => "RESPONSE RECEIVED TOO LATE",
+        "SWITCH_ERROR_CODE" => "68",
+    ];
 
     public $CODE;
     public $MESSAGE;
     public $SWITCH_ERROR_CODE;
 
-    function __construct($code, $message, $switcherrorCode)
+    public function __construct($code, $message, $switchErrorCode)
     {
         $this->CODE = $code;
         $this->MESSAGE = $message;
-        $this->SWITCH_ERROR_CODE = $switcherrorCode;
+        $this->SWITCH_ERROR_CODE = $switchErrorCode;
     }
 
-    /**
-     * these errors happen within isw systems
-     * @return
-     */
     public static function getInternalResponseCodes()
     {
-        $internalCodes = array();
-        array_push($internalCodes, self::AUTHORIZATION_ERROR['CODE']);
-        array_push($internalCodes, self::INTERNAL_ERROR['CODE']);
-        array_push($internalCodes, self::ERROR_RESPONSE_FROM_HOST['CODE']);
-        array_push($internalCodes, self::ISSUER_INNOPERATIVE['CODE']);
-        array_push($internalCodes, self::ROUTING_ERROR['CODE']);
-        return $internalCodes;
+        return [
+            self::AUTHORIZATION_ERROR['CODE'],
+            self::INTERNAL_ERROR['CODE'],
+            self::ERROR_RESPONSE_FROM_HOST['CODE'],
+            self::ISSUER_INNOPERATIVE['CODE'],
+            self::ROUTING_ERROR['CODE'],
+        ];
     }
 
     public static function retrieveMessage($code)
     {
-        foreach (self::values() as $value) {
-            if (strcasecmp($value['CODE'], $code) == 0) {
-                return $value['MESSAGE'];
-            }
-        }
-        return "";
+        return self::retrieveValue($code, 'MESSAGE');
     }
 
     public static function retrieveSwitchCode($code)
     {
-        foreach (self::values() as $value) {
-            if (strcasecmp($value['CODE'], $code) == 0) {
-                return $value['SWITCH_ERROR_CODE'];
-            }
-        }
-        return "";
+        return self::retrieveValue($code, 'SWITCH_ERROR_CODE');
     }
 
     public static function retrieveBasedOnSwitchCode($code)
     {
-        foreach (self::values() as $value) {
-            if (strcasecmp($value['SWITCH_ERROR_CODE'], $code) == 0) {
-                return $value['CODE'];
+        return self::retrieveValueBySwitchCode($code, 'CODE');
+    }
+
+    public static function values()
+    {
+        $values = [];
+        foreach (self::constants() as $constant) {
+            $values[] = $constant;
+        }
+        return $values;
+    }
+
+    private static function retrieveValue($code, $key)
+    {
+        foreach (self::constants() as $constant) {
+            if (strcasecmp($constant['CODE'], $code) === 0) {
+                return $constant[$key];
+            }
+        }
+        return '';
+    }
+
+    private static function retrieveValueBySwitchCode($code, $key)
+    {
+        foreach (self::constants() as $constant) {
+            if (strcasecmp($constant['SWITCH_ERROR_CODE'], $code) === 0) {
+                return $constant[$key];
             }
         }
         return self::DECLINED['CODE'];
     }
 
-    public static function values()
+    private static function constants()
     {
         return [
             self::NONEXISTENT_TRANSACTION,
@@ -125,8 +363,8 @@ class PhoenixResponseCodes
             self::EXCEEDS_CONFIGURED_LIMIT,
             self::REQUEST_IN_PROGRESS,
             self::DECLINED,
-            self::SUSUPECTED_DUPLICATE,
-            self::SUSUPECTED_FRAUD,
+            self::SUSPECTED_DUPLICATE,
+            self::SUSPECTED_FRAUD,
             self::ERROR_RESPONSE_FROM_HOST,
             self::INVALID_AMOUNT,
             self::UN_RECOGNIZABLE_CUSTOMER_NUMBER,
@@ -144,7 +382,7 @@ class PhoenixResponseCodes
             self::SAVINGS_ACCOUNT_NOT_FOUND,
             self::INCORRECT_FEE_SETUP,
             self::TERMINAL_OWNER_NOT_SET_UP,
-            self::UNRECOGNISED_ISSUER,
+            self::UNRECOGNIZED_ISSUER,
             self::BILLER_NOT_FOUND,
             self::BILLER_NOT_ENABLED_FOR_CHANNEL,
             self::ISSUER_NOT_ENABLED_FOR_BILLER,
@@ -153,7 +391,7 @@ class PhoenixResponseCodes
             self::TRANSACTION_NOT_PERMITTED,
             self::NO_CARD_RECORD,
             self::EXPIRED_CARD,
-            self::TRANSACTION_NOT_PERMITED_TO_CARD,
+            self::TRANSACTION_NOT_PERMITTED_TO_CARD,
             self::PIN_TRIES_EXCEEDED,
             self::EXCEEDS_WITHDRAWAL_LIMIT,
             self::RESPONSE_RECEIVED_TOO_LATE

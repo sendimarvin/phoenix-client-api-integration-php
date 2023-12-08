@@ -51,10 +51,17 @@ class EllipticCurveUtils
 
     public function doECDH(string $privateKey, string $publicKey)
     {
-        $ecdh = new EC('prime256v1');
-        $ecdh->loadPrivateKey(base64_decode($privateKey));
-        $ecdh->loadPublicKey(base64_decode($publicKey));
-        return base64_encode($ecdh->computeSecret());
+        // $ecdh = new EC('prime256v1');
+        // $ecdh->loadPrivateKey(base64_decode($privateKey));
+        // $ecdh->loadPublicKey(base64_decode($publicKey));
+        // return base64_encode($ecdh->computeSecret());
+
+        $ecdhLoadPrivate = EC::loadPrivateKey($privateKey);
+        $ecdhLoadPublic = EC::loadPrivateKey($publicKey);
+
+
+        print_r($ecdhLoadPublic );
+        die();
     }
 
     public function generateKeypair()

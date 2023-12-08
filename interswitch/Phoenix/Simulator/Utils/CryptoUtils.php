@@ -4,6 +4,7 @@ namespace Interswitch\Phoenix\Simulator\Utils;
 
 use Exception;
 use phpseclib3\Crypt\RSA;
+use Interswitch\Phoenix\Simulator\Dto\PhoenixResponseCodes;
 // use phpseclib3\Crypt\Key\RSA;
 
 // use phpseclib\Crypt\RSA;
@@ -39,14 +40,31 @@ class CryptoUtils
         }
     }
 
-    public static function decryptWithPrivate($plaintext)
+    public static function decryptWithPrivate($encryptedString, $privateKey)
     {
         try {
             self::initialize();
-            $message = base64_decode($plaintext);
-            openssl_private_decrypt($message, $decrypted, self::getRSAPrivate());
-            return utf8_decode($decrypted);
+            // $message = base64_decode(mb_convert_encoding($encryptedString, 'UTF-8', mb_detect_encoding($encryptedString)));
+            $decryptedData = '';
+            $message = base64_decode($encryptedString);
+            openssl_private_decrypt($message, $decryptedData, (string)$privateKey, OPENSSL_PKCS1_OAEP_PADDING);
+
+            echo "\n\n\n\n";
+            echo "\n------------------------------------------------------------------------------------------------\n";
+
+            // echo '=================================================RSA==============================================', PHP_EOL;
+            // print_r((string)$privateKey);
+
+            echo '=================================================RSA==============================================', PHP_EOL;
+
+            // echo $encryptedString;
+            // die();
+            echo $decryptedData, PHP_EOL;
+            return $decryptedData;
         } catch (Exception $e) {
+
+            // print_r($e->getMessage());
+            // die();
             self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to decryptWithPrivate ");
         }
     }
@@ -55,7 +73,7 @@ class CryptoUtils
     {
         try {
             self::initialize();
-            openssl_private_decrypt($message, $decrypted, $privateKey);
+            openssl_private_decrypt($message, $decrypted, (string)$privateKey);
             return utf8_decode($decrypted);
         } catch (Exception $e) {
             self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to decryptWithPrivate ");
@@ -65,15 +83,15 @@ class CryptoUtils
     public static function decryptWithPrivateString($plaintext, $privateKey)
     {
         $message = base64_decode($plaintext);
-        return self::decryptWithPrivateBytes($message, $privateKey);
+        return self::decryptWithPrivateBytes($message, (string) $privateKey);
     }
 
-    public static function encryptWithPrivate($plaintext)
+    public static function encryptWithPrivate($plaintext, $privateKey)
     {
         try {
             self::initialize();
             $message = utf8_encode($plaintext);
-            openssl_private_encrypt($message, $encrypted, self::getRSAPrivate());
+            openssl_private_encrypt($message, $encrypted, self::getRSAPrivate((string) $privateKey));
             return base64_encode($encrypted);
         } catch (Exception $e) {
             self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to encryptWithPrivate ");
@@ -87,18 +105,20 @@ class CryptoUtils
 
     public static function getRSAPrivateString($privateKey)
     {
-        return self::getRSAPrivate($privateKey);
+        return self::getRSAPrivate((string) $privateKey);
     }
 
     public static function getRSAPrivate($privateKey = Constants::PRIKEY)
     {
         try {
             $keyResource = openssl_get_privatekey($privateKey);
+            
             if ($keyResource === false) {
                 throw new Exception("Failed to get private key");
             }
             return $keyResource;
         } catch (Exception $e) {
+
             self::handleException($e, PhoenixResponseCodes::INTERNAL_ERROR['CODE'], "Failure to getRSAPrivate ");
         }
     }
@@ -147,13 +167,13 @@ class CryptoUtils
         }
     }
 
-    public static function generateKeyPair()
+    public static function generateKeyPair(int $size = 2048)
     {
         try {
             // $rsa = new RSA();
             // $keyPair = $rsa->createKey();
 
-            $privateKey = RSA::createKey();
+            $privateKey = RSA::createKey($size);
             
             return [
                 $privateKey,
@@ -166,14 +186,14 @@ class CryptoUtils
 
     private static function initialize()
     {
-        if (!isset(self::$LOG)) {
-            self::$LOG = LoggerFactory::getLogger(self::class);
-        }
+        // if (!isset(self::$LOG)) {
+        //     self::$LOG = LoggerFactory::getLogger(self::class);
+        // }
     }
 
     private static function handleException($exception, $errorCode, $errorMessage)
     {
-        self::$LOG->error("Exception trace: {}", $exception->getTraceAsString());
+        echo "Exception trace: ", $exception->getTraceAsString();
         throw new SystemApiException($errorCode, $errorMessage);
     }
 }
